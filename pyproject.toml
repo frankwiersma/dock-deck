@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dock-deck"
+dynamic = ["version"]
+description = "Your Mac's Dock on a Mirabox / Ajazz style stream dock: app icons, sorted by use, with window cycling."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [{ name = "Frank Wiersma" }]
+classifiers = [
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Topic :: System :: Hardware :: Universal Serial Bus (USB) :: Human Interface Device (HID)",
+]
+dependencies = [
+    "hidapi>=0.14",
+    "pillow>=10",
+    "pyobjc-framework-Cocoa>=10",
+    "pyobjc-framework-ApplicationServices>=10",
+]
+
+[project.scripts]
+dock-deck = "dock_deck.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/frankwiersma/dock-deck"
+
+[tool.hatch.version]
+path = "src/dock_deck/__init__.py"
