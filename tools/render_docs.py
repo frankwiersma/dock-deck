@@ -189,7 +189,7 @@ def text_key(label, size, bg=(30, 30, 30), w=KEY):
 # --- the device ----------------------------------------------------------------------------
 
 
-def device(page, pages, apps, pressed=None, caption=None):
+def device(page, pages, apps, pressed=None, caption=None, flash=None):
     grid_w = 5 * KEY + 4 * GAP
     grid_h = 3 * KEY + 2 * GAP
     w = PAD + grid_w + GAP + SIDE + PAD
@@ -208,6 +208,11 @@ def device(page, pages, apps, pressed=None, caption=None):
     keys = {}
     for i, spec in enumerate(apps):
         keys[[0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 13, 14][i]] = icon_key(spec)
+    if flash is not None:
+        pos, label = flash
+        red = Image.blend(keys[pos], Image.new("RGBA", (KEY, KEY), (200, 30, 30, 255)), 0.65)
+        ImageDraw.Draw(red).text((KEY / 2, KEY / 2), label, font=font(22), anchor="mm", fill="white")
+        keys[pos] = red
     keys[15] = text_key("▲", 44)
     keys[16] = text_key("▼", 44)
     for pos in range(18):
@@ -264,10 +269,11 @@ def main():
         (2, page2, 15, "press ▲ to go back"),
         (1, page1, None, "13 apps per page, most used first"),
         (1, page1, 0, "press an app to open it, again to cycle its windows"),
+        (1, page1, 0, "hold it to close a window, or quit the app", (0, "close")),
     ]
     frames, durations = [], []
-    for page, apps, pressed, caption in steps:
-        f = flat(device(page, 2, apps, pressed, caption), bg)
+    for page, apps, pressed, caption, *flash in steps:
+        f = flat(device(page, 2, apps, pressed, caption, flash[0] if flash else None), bg)
         frames.append(f.resize((f.width // S, f.height // S), Image.LANCZOS))
         durations.append(700 if pressed is not None else 1600)
     frames[0].save(OUT / "demo.gif", save_all=True, append_images=frames[1:], duration=durations, loop=0, optimize=True)

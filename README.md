@@ -1,6 +1,6 @@
 # dock-deck
 
-Your Mac's Dock on a cheap stream dock. Every key is an app, sorted by how much you use it. Press a key to open the app; press it again to cycle through that app's windows.
+Your Mac's Dock on a cheap stream dock. Every key is an app, sorted by how much you use it. Press a key to open the app, press it again to cycle through its windows, hold it to close a window or quit.
 
 <p align="center">
   <img src="docs/deck.png" alt="A 15-key stream dock showing app icons, page up/down keys and a page indicator on the right-hand display" width="640">
@@ -11,11 +11,12 @@ Your Mac's Dock on a cheap stream dock. Every key is an app, sorted by how much 
 - **Shows your apps.** Everything in the Dock (pinned and running), plus every app you've used since dock-deck started, so a key doesn't disappear when you quit an app. A dot under an icon means the app is running.
 - **Most-used first.** Apps are ranked by how often and how recently you use them. dock-deck re-sorts every few minutes, never while you're pressing keys.
 - **Cycles windows.** Pressing the key of the app that is already in front brings up its next window, across every running instance of that app.
+- **Closes and quits.** Hold a key for a moment: if the app has more than one window, its front window closes; with one window left, the app quits (it can still ask you to save). The key flashes red with "close" or "quit".
 - **Pages.** 13 app keys per page. The two bottom-right keys page up and down; the display on the right shows where you are.
 - **Stays up.** It reconnects when you unplug the deck, and it can start at login.
 
 <p align="center">
-  <img src="docs/demo.gif" alt="Animation: pressing the down key flips to page 2, the up key goes back, pressing an app key opens it" width="560">
+  <img src="docs/demo.gif" alt="Animation: the down key flips to page 2, the up key goes back, pressing an app key opens it, holding it closes a window" width="560">
 </p>
 
 ## Hardware
@@ -62,7 +63,7 @@ That writes `~/Library/LaunchAgents/io.github.dock-deck.plist` and starts it rig
 
 ### Window cycling needs Accessibility
 
-Raising a specific window takes macOS Accessibility permission. On first start, macOS asks for it; you can also grant it under **System Settings → Privacy & Security → Accessibility**. Everything else works without it.
+Raising or closing a specific window takes macOS Accessibility permission. On first start, macOS asks for it; you can also grant it under **System Settings → Privacy & Security → Accessibility**. Without it, everything else works and a long press always quits the app.
 
 When dock-deck runs as a login agent, the entry in that list is the Python interpreter dock-deck runs on (usually shown as **Python**). Keep in mind that the permission then applies to other background scripts run by that same interpreter too.
 

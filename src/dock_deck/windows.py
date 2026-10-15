@@ -74,3 +74,28 @@ class WindowCycler:
         AXUIElementSetAttributeValue(window, "AXMain", True)
         log.info("window %d/%d of %s", (i + 1) % len(rotation) + 1, len(rotation), path)
         return True
+
+
+def close_or_quit(path):
+    """Close the app's front window if it has several, else quit the app.
+
+    Returns "closed", "quit", or None when the app isn't running.
+    """
+    instances = _instances(path)
+    if not instances:
+        return None
+    windows = [w for app in instances for _, w in _windows(app)]
+    if len(windows) > 1:
+        front = NSWorkspace.sharedWorkspace().frontmostApplication()
+        front_pid = front.processIdentifier() if front else None
+        for app in sorted(instances, key=lambda a: a.processIdentifier() != front_pid):
+            window = _attr(AXUIElementCreateApplication(app.processIdentifier()), "AXFocusedWindow")
+            button = window in windows and _attr(window, "AXCloseButton")
+            if button:
+                AXUIElementPerformAction(button, "AXPress")
+                log.info("closed a window of %s", path)
+                return "closed"
+    for app in instances:
+        app.terminate()  # polite quit: the app can still ask to save
+    log.info("quit %s", path)
+    return "quit"
